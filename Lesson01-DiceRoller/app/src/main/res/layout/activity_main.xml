@@ -12,7 +12,7 @@
         android:id="@+id/dice_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/empty_dice" />
+        app:srcCompat="@drawable/empty_dice" />
 
     <Button
         android:id="@+id/roll_button"
