@@ -1,2 +1,2 @@
 # Kotlin Android Toy Apps
-Developing Android applications with Kotlin.
+Developing Android Apps with Kotlin.
