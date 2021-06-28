@@ -55,6 +55,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/questionImage"
                 tools:text="What color is the Android mascot?" />
 
+
             <RadioGroup
                 android:id="@+id/questionRadioGroup"
                 android:layout_width="0dp"
