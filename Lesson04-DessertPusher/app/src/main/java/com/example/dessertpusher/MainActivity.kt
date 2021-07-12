@@ -2,7 +2,6 @@ package com.example.dessertpusher
 
 import android.content.ActivityNotFoundException
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -11,10 +10,9 @@ import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import com.example.dessertpusher.databinding.ActivityMainBinding
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), LifecycleObserver {
-
-    private val TAG: String = MainActivity::class.java.simpleName
 
     private var revenue = 0
     private var dessertsSold = 0
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate called")
+        Timber.i("onCreate called")
 
         // Use Data Binding to get reference to the views
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -70,7 +68,27 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     override fun onStart() {
         super.onStart()
-        Log.i(TAG, "onStart called")
+        Timber.i("onStart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.i("onResume called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.i("onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("onDestroy called")
     }
 
     /**
