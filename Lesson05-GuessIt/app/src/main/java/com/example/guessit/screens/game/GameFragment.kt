@@ -43,13 +43,9 @@ class GameFragment : Fragment() {
         // data in the VieWModel
         binding.gameViewModel = viewModel
 
-        /** Setting up LiveData observation relationship **/
-        viewModel.word.observe(
-            viewLifecycleOwner,
-            Observer { newWord -> binding.wordText.text = newWord })
-        viewModel.score.observe(
-            viewLifecycleOwner,
-            Observer { newScore -> binding.scoreText.text = newScore.toString() })
+        // Specify the current activity as the lifecycle owner of the binding. This is used so that
+        // the binding can observe LiveData updates
+        binding.lifecycleOwner = viewLifecycleOwner
 
         // Setup an observer relationship to update binding.timerText
         // You can use DateUtils.formatElapsedTime to correctly format the long to a time string
