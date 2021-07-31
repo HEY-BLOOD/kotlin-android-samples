@@ -1,6 +1,7 @@
 package com.example.guessit.screens.game
 
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,12 @@ class GameFragment : Fragment() {
             viewLifecycleOwner,
             Observer { newScore -> binding.scoreText.text = newScore.toString() })
 
+        // Setup an observer relationship to update binding.timerText
+        // You can use DateUtils.formatElapsedTime to correctly format the long to a time string
+        viewModel.currentTime.observe(viewLifecycleOwner, Observer { newTime ->
+            binding.timerText.text = DateUtils.formatElapsedTime(newTime)
+        })
+
         // Sets up event listening to navigate the player when the game is finished
         viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { isFinished ->
             if (isFinished) {
@@ -62,7 +69,6 @@ class GameFragment : Fragment() {
             }
         })
         return binding.root
-
     }
 
     /**
