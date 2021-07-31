@@ -54,6 +54,13 @@ class GameFragment : Fragment() {
             viewLifecycleOwner,
             Observer { newScore -> binding.scoreText.text = newScore.toString() })
 
+        // Sets up event listening to navigate the player when the game is finished
+        viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { isFinished ->
+            if (isFinished) {
+                gameFinished()
+                viewModel.onGameFinishComplete()
+            }
+        })
         return binding.root
 
     }
