@@ -28,6 +28,8 @@ class GameFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Call the function of ViewModel so that it is actually created
+        Log.i("GameViewModel", viewModel.hashCode().toString())
 
         // Inflate view and obtain an instance of the binding class
         binding = DataBindingUtil.inflate(
@@ -37,15 +39,9 @@ class GameFragment : Fragment() {
             false
         )
 
-        // Call the function of ViewModel so that it is actually created
-        Log.i("GameViewModel", viewModel.hashCode().toString())
-
-        binding.correctButton.setOnClickListener {
-            viewModel.onCorrect()
-        }
-        binding.skipButton.setOnClickListener {
-            viewModel.onSkip()
-        }
+        // Set the viewmodel for databinding - this allows the bound layout access to all of the
+        // data in the VieWModel
+        binding.gameViewModel = viewModel
 
         /** Setting up LiveData observation relationship **/
         viewModel.word.observe(
