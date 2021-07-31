@@ -1,10 +1,14 @@
 package com.example.guessit.screens.game
 
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -53,6 +57,15 @@ class GameFragment : Fragment() {
                 viewModel.onGameFinishComplete()
             }
         })
+
+        // correct pattern. Remember to call onBuzzComplete!
+        // Buzzes when triggered with different buzz events
+        viewModel.eventBuzz.observe(viewLifecycleOwner, Observer { buzzType ->
+            if (buzzType != GameViewModel.BuzzType.NO_BUZZ) {
+                buzz(buzzType.pattern)
+                viewModel.onBuzzComplete()
+            }
+        })
         return binding.root
     }
 
@@ -63,5 +76,21 @@ class GameFragment : Fragment() {
         val currentScore = viewModel.score.value ?: 0
         val action = GameFragmentDirections.actionGameToScore(currentScore)
         findNavController(this).navigate(action)
+    }
+
+    /**
+     * Given a pattern, this method makes sure the device buzzes
+     */
+    private fun buzz(pattern: LongArray) {
+        val buzzer = activity?.getSystemService<Vibrator>()
+
+        buzzer?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                buzzer.vibrate(VibrationEffect.createWaveform(pattern, -1))
+            } else {
+                //deprecated in API 26
+                buzzer.vibrate(pattern, -1)
+            }
+        }
     }
 }
