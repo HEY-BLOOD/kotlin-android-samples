@@ -51,5 +51,8 @@ dependencies {
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$version_navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
+    // Room
+    implementation "androidx.room:room-runtime:$version_room"
+    annotationProcessor "androidx.room:room-compiler:$version_room"
 
 }
