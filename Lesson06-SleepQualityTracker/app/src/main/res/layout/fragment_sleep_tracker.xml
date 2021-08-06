@@ -26,6 +26,10 @@
          click handlers, and state variables. -->
     <data>
 
+        <variable
+            name="sleepTrackerViewModel"
+            type="online.zhenhong.sleepqualitytracker.sleeptracker.SleepTrackerViewModel" />
+
     </data>
 
     <!-- Start of the visible fragment layout using ConstraintLayout -->
