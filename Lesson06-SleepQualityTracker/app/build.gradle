@@ -53,7 +53,11 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
     // Room
     implementation "androidx.room:room-runtime:$version_room"
+    implementation "androidx.room:room-ktx:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_coroutine"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_coroutine"
 
     // Testing
     testImplementation 'junit:junit:4.12'
