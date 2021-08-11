@@ -17,10 +17,7 @@
 package online.zhenhong.sleepqualitytracker.sleeptracker
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import online.zhenhong.sleepqualitytracker.database.SleepDatabaseDao
 import online.zhenhong.sleepqualitytracker.database.SleepNight
@@ -49,12 +46,36 @@ class SleepTrackerViewModel(
         formatNights(nights, application.resources)
     }
 
+    /**
+     * Variable that tells the Fragment to navigate to a specific [SleepQualityFragment]
+     *
+     * This is private because we don't want to expose setting this value to the Fragment.
+     */
+    private val _navigateToQuality = MutableLiveData<SleepNight>()
+
+    /**
+     * If this is non-null, immediately navigate to [SleepQualityFragment] and call [doneNavigating]
+     */
+    val navigateToQuality: LiveData<SleepNight>
+        get() = _navigateToQuality
+
+
+    /**
+     * Call this immediately after navigating to [SleepQualityFragment]
+     *
+     * It will clear the navigation request, so if the user rotates their phone it won't navigate
+     * twice.
+     */
+    fun doneNavigating() {
+        _navigateToQuality.value = null
+    }
+
     init {
         initializeTonight()
     }
 
     private fun initializeTonight() {
-        uiScope.launch {
+        viewModelScope.launch {
             tonight.value = getTonightFromDatabase()
         }
     }
@@ -114,6 +135,7 @@ class SleepTrackerViewModel(
             oldNight.endTimeMilli = System.currentTimeMillis()
 
             update(oldNight)
+            _navigateToQuality.value = oldNight
         }
     }
 
@@ -131,21 +153,15 @@ class SleepTrackerViewModel(
     }
 
     private suspend fun insert(night: SleepNight) {
-        withContext(Dispatchers.IO) {
             database.insert(night)
-        }
     }
 
     private suspend fun update(night: SleepNight) {
-        withContext(Dispatchers.IO) {
             database.update(night)
-        }
     }
 
     private suspend fun clear() {
-        withContext(Dispatchers.IO) {
             database.clear()
-        }
     }
 
 }
