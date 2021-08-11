@@ -59,6 +59,50 @@ class SleepTrackerViewModel(
     val navigateToQuality: LiveData<SleepNight>
         get() = _navigateToQuality
 
+    /**
+     * If tonight has not been set, then the START button should be visible.
+     */
+    val startButtonVisible = Transformations.map(tonight) {
+        null == it
+    }
+
+    /**
+     * If tonight has been set, then the STOP button should be visible.
+     */
+    val stopButtonVisible = Transformations.map(tonight) {
+        null != it
+    }
+
+    /**
+     * If there are any nights in the database, show the CLEAR button.
+     */
+    val clearButtonVisible = Transformations.map(nights) {
+        it?.isNotEmpty()
+    }
+
+    /**
+     * Request a toast by setting this value to true.
+     *
+     * This is private because we don't want to expose setting this value to the Fragment.
+     */
+    private var _showSnackBarEvent = MutableLiveData<Boolean>()
+
+    /**
+     * If this is true, immediately `show()` a toast and call `doneShowingSnackbar()`.
+     */
+    val showSnackBarEvent: LiveData<Boolean>
+        get() = _showSnackBarEvent
+
+    /**
+     * Call this immediately after calling `show()` on a toast.
+     *
+     * It will clear the toast request, so if the user rotates their phone it won't show a duplicate
+     * toast.
+     */
+
+    fun doneShowingSnackBar() {
+        _showSnackBarEvent.value = false
+    }
 
     /**
      * Call this immediately after navigating to [SleepQualityFragment]
@@ -131,6 +175,9 @@ class SleepTrackerViewModel(
             // not the lambda.
             val oldNight = tonight.value ?: return@launch
 
+            // Disable the Start button state
+            tonight.value = null
+
             // Update the night in the database to add the end time.
             oldNight.endTimeMilli = System.currentTimeMillis()
 
@@ -149,19 +196,21 @@ class SleepTrackerViewModel(
 
             // And clear tonight since it's no longer in the database
             tonight.value = null
+            // Show a snack bar message, because it's friendly.
+            _showSnackBarEvent.value = true
         }
     }
 
     private suspend fun insert(night: SleepNight) {
-            database.insert(night)
+        database.insert(night)
     }
 
     private suspend fun update(night: SleepNight) {
-            database.update(night)
+        database.update(night)
     }
 
     private suspend fun clear() {
-            database.clear()
+        database.clear()
     }
 
 }

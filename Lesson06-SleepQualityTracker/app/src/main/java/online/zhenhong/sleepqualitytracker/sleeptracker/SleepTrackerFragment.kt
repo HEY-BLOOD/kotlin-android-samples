@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import online.zhenhong.sleepqualitytracker.R
 import online.zhenhong.sleepqualitytracker.database.SleepDatabase
 import online.zhenhong.sleepqualitytracker.databinding.FragmentSleepTrackerBinding
@@ -59,6 +60,21 @@ class SleepTrackerFragment : Fragment() {
 
         binding.sleepTrackerViewModel = sleepTrackerViewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        // Add an Observer on the state variable for showing a Snackbar message
+        // when the CLEAR button is pressed.
+        sleepTrackerViewModel.showSnackBarEvent.observe(viewLifecycleOwner, Observer {
+            if (it == true) { // Observed state is true.
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.cleared_message),
+                    Snackbar.LENGTH_SHORT // How long to display the message.
+                ).show()
+                // Reset state to make sure the snackbar is only shown once, even if the device
+                // has a configuration change.
+                sleepTrackerViewModel.doneShowingSnackBar()
+            }
+        })
 
         // Add an Observer on the state variable for Navigating when STOP button is pressed.
         sleepTrackerViewModel.navigateToQuality.observe(viewLifecycleOwner, Observer { night ->
