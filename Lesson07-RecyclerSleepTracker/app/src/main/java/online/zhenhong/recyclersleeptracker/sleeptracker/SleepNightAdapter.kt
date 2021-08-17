@@ -27,7 +27,6 @@ import online.zhenhong.recyclersleeptracker.convertDurationToFormatted
 import online.zhenhong.recyclersleeptracker.convertNumericQualityToString
 import online.zhenhong.recyclersleeptracker.database.SleepNight
 
-
 class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
 
     var data = listOf<SleepNight>()
@@ -36,12 +35,7 @@ class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater
-            .inflate(R.layout.list_item_sleep_night, parent, false)
-        return ViewHolder(view)
-    }
+    override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
@@ -49,7 +43,9 @@ class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
         holder.bind(item)
     }
 
-    override fun getItemCount(): Int = data.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder.from(parent)
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val sleepLength: TextView = itemView.findViewById(R.id.sleep_length)
@@ -74,6 +70,15 @@ class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
                 }
             )
         }
-    }
 
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater
+                    .inflate(R.layout.list_item_sleep_night, parent, false)
+
+                return ViewHolder(view)
+            }
+        }
+    }
 }
