@@ -15,3 +15,26 @@
  */
 
 package online.zhenhong.recyclersleeptracker.sleeptracker
+
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import online.zhenhong.recyclersleeptracker.TextItemViewHolder
+import online.zhenhong.recyclersleeptracker.database.SleepNight
+
+
+class SleepNightAdapter : RecyclerView.Adapter<TextItemViewHolder>() {
+
+    var data = listOf<SleepNight>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextItemViewHolder {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBindViewHolder(holder: TextItemViewHolder, position: Int) {
+        val item = data[position]
+        holder.textView.text = item.sleepQuality.toString()
+    }
+
+    override fun getItemCount(): Int = data.size
+
+}
