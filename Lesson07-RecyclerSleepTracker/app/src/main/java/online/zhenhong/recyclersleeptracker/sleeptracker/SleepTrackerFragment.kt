@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import online.zhenhong.recyclersleeptracker.R
 import online.zhenhong.recyclersleeptracker.database.SleepDatabase
@@ -68,6 +69,10 @@ class SleepTrackerFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = SleepNightAdapter()
+        // 3 columns per row in the grid
+        val layoutManager = GridLayoutManager(context, 3)
+
+        binding.sleepRecyclerView.layoutManager = layoutManager
         binding.sleepRecyclerView.adapter = adapter
         sleepTrackerViewModel.nights.observe(viewLifecycleOwner, Observer {
             it?.let {
