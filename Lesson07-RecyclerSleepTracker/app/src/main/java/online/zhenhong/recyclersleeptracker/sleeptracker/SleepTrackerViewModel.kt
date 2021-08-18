@@ -17,22 +17,19 @@
 package online.zhenhong.recyclersleeptracker.sleeptracker
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
+import kotlinx.coroutines.*
 import online.zhenhong.recyclersleeptracker.database.SleepDatabaseDao
 import online.zhenhong.recyclersleeptracker.database.SleepNight
 import online.zhenhong.recyclersleeptracker.formatNights
-import kotlinx.coroutines.*
-import androidx.lifecycle.viewModelScope
 
 /**
  * ViewModel for SleepTrackerFragment.
  */
 class SleepTrackerViewModel(
-        val database: SleepDatabaseDao,
-        application: Application) : AndroidViewModel(application) {
+    val database: SleepDatabaseDao,
+    application: Application
+) : AndroidViewModel(application) {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -48,7 +45,7 @@ class SleepTrackerViewModel(
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
      * a [ViewModel] update the UI after performing some processing.
-     */
+    */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
      */
 
@@ -104,7 +101,8 @@ class SleepTrackerViewModel(
      * This is private because we don't want to expose setting this value to the Fragment.
      */
 
-    private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
+    private val _navigateToSleepQuality = MutableLiveData<SleepNight?>()
+
     /**
      * Call this immediately after calling `show()` on a toast.
      *
@@ -119,7 +117,7 @@ class SleepTrackerViewModel(
     /**
      * If this is non-null, immediately navigate to [SleepQualityFragment] and call [doneNavigating]
      */
-    val navigateToSleepQuality: LiveData<SleepNight>
+    val navigateToSleepQuality: MutableLiveData<SleepNight?>
         get() = _navigateToSleepQuality
 
     /**
@@ -132,7 +130,8 @@ class SleepTrackerViewModel(
         _navigateToSleepQuality.value = null
     }
 
-    private val _navigateToSleepDataQuality = MutableLiveData<Long>()
+    // Navigate to sleep detail item id
+    private val _navigateToSleepDataQuality = MutableLiveData<Long?>()
     val navigateToSleepDataQuality
         get() = _navigateToSleepDataQuality
 
@@ -162,13 +161,11 @@ class SleepTrackerViewModel(
      *  recording.
      */
     private suspend fun getTonightFromDatabase(): SleepNight? {
-        //return withContext(Dispatchers.IO) {
-            var night = database.getTonight()
-            if (night?.endTimeMilli != night?.startTimeMilli) {
-                night = null
-            }
-            return night
-        //}
+        var night = database.getTonight()
+        if (night?.endTimeMilli != night?.startTimeMilli) {
+            night = null
+        }
+        return night
     }
 
     private suspend fun clear() {
@@ -248,8 +245,8 @@ class SleepTrackerViewModel(
      * using memory and resources.
 
     override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
+    super.onCleared()
+    viewModelJob.cancel()
     }
      */
 }
