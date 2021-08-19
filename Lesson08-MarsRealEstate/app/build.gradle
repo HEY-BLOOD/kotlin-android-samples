@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -29,15 +31,48 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        dataBinding true
+    }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVerion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVerion"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
+
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:$recyclerVersion"
+
+    // Coroutines
+    // implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    // implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+
+    // Retrofit
+    // implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    // implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
+
+    // Moshi
+    // implementation "com.squareup.moshi:moshi:$moshiVersion"
+    // implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+
+    // Retrofit with Moshi Converter
+    // implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+
+    // Glide
+    // implementation "com.github.bumptech.glide:glide:$glideVersion"
+
+    // Retrofit Coroutines Support - Deprecated - No more required
+    // implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
+
 }
