@@ -17,25 +17,69 @@
 package online.zhenhong.recyclersleeptracker.sleeptracker
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import online.zhenhong.recyclersleeptracker.R
 import online.zhenhong.recyclersleeptracker.database.SleepNight
 import online.zhenhong.recyclersleeptracker.databinding.ListItemSleepNightBinding
 
+/**
+ *  variables for Header and SleepNight item types.
+ */
+private val ITEM_VIEW_TYPE_HEADER = 0
+private val ITEM_VIEW_TYPE_ITEM = 1
+
 class SleepNightAdapter(val clickListener: OnSleepNightClickListener) :
-    ListAdapter<SleepNight, SleepNightAdapter.ViewHolder>(SleepNightDiffCallback) {
+    ListAdapter<SleepNightAdapter.DataItem, RecyclerView.ViewHolder>(SleepNightDiffCallback) {
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
+    private val adapterScope = CoroutineScope(Dispatchers.Default)
 
-        holder.bind(clickListener, getItem(position)!!)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is ViewHolder -> {
+                val nightItem = getItem(position) as DataItem.SleepNightItem
+                holder.bind(clickListener, nightItem.sleepNight)
+            }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            ITEM_VIEW_TYPE_HEADER -> TextViewHolder.from(parent)
+            ITEM_VIEW_TYPE_ITEM -> ViewHolder.from(parent)
+            else -> throw ClassCastException("Unknown viewType ${viewType}")
+        }
     }
+
+    /**
+     * override getItemViewType() and check whether the item is a Header or a SleepNight.
+     */
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is DataItem.Header -> ITEM_VIEW_TYPE_HEADER
+            is DataItem.SleepNightItem -> ITEM_VIEW_TYPE_ITEM
+        }
+    }
+
+    fun addHeaderAndSubmitList(list: List<SleepNight>?) {
+        adapterScope.launch {
+            val items = when (list) {
+                null -> listOf(DataItem.Header)
+                else -> listOf(DataItem.Header) + list.map { DataItem.SleepNightItem(it) }
+            }
+            withContext(Dispatchers.Main) {
+                submitList(items)
+            }
+        }
+    }
+
 
     class ViewHolder(val binding: ListItemSleepNightBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -63,15 +107,38 @@ class SleepNightAdapter(val clickListener: OnSleepNightClickListener) :
      * list that's been passed to `submitList`.
      */
     object SleepNightDiffCallback :
-        DiffUtil.ItemCallback<SleepNight>() {
-        override fun areItemsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean =
-            oldItem.nightId == newItem.nightId
+        DiffUtil.ItemCallback<DataItem>() {
+        override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean =
+            oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean =
+        override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean =
             oldItem == newItem
     }
 
     class OnSleepNightClickListener(val clickListener: (sleepId: Long) -> Unit) {
         fun onClick(night: SleepNight) = clickListener(night.nightId)
     }
+
+    sealed class DataItem {
+        data class SleepNightItem(val sleepNight: SleepNight) : DataItem() {
+            override val id = sleepNight.nightId
+        }
+
+        object Header : DataItem() {
+            override val id = Long.MIN_VALUE
+        }
+
+        abstract val id: Long
+    }
+
+    class TextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent: ViewGroup): TextViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.header, parent, false)
+                return TextViewHolder(view)
+            }
+        }
+    }
+
 }
