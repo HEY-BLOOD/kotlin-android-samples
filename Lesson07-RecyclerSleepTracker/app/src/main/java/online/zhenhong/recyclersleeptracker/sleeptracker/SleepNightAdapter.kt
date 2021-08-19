@@ -80,7 +80,6 @@ class SleepNightAdapter(val clickListener: OnSleepNightClickListener) :
         }
     }
 
-
     class ViewHolder(val binding: ListItemSleepNightBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

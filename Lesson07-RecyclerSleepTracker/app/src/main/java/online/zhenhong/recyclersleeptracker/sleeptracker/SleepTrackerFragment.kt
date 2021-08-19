@@ -72,9 +72,16 @@ class SleepTrackerFragment : Fragment() {
             sleepTrackerViewModel.onSleepNightClicked(nightId)
         })
         // 3 columns per row in the grid
-        val layoutManager = GridLayoutManager(context, 3)
+        val gridLayoutManager = GridLayoutManager(context, 3)
+        // span size for each position, and assign it to manager.spanSizeLookup.
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int = when (position) {
+                0 -> 3
+                else -> 1
+            }
+        }
 
-        binding.sleepRecyclerView.layoutManager = layoutManager
+        binding.sleepRecyclerView.layoutManager = gridLayoutManager
         binding.sleepRecyclerView.adapter = adapter
         sleepTrackerViewModel.nights.observe(viewLifecycleOwner, Observer {
             it?.let {
