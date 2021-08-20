@@ -59,8 +59,10 @@ dependencies {
     // implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     // Retrofit
-    // implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    // implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+
+    // Retrofit with Scalars Converter
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
 
     // Moshi
     // implementation "com.squareup.moshi:moshi:$moshiVersion"
