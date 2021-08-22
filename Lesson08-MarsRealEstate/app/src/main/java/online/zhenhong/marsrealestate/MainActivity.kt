@@ -19,7 +19,6 @@ package online.zhenhong.marsrealestate
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import online.zhenhong.marsrealestate.R
 
 class MainActivity : AppCompatActivity() {
 

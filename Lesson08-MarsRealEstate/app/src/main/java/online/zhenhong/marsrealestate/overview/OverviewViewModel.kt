@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import online.zhenhong.marsrealestate.network.MarsApi
+import online.zhenhong.marsrealestate.network.MarsApiFilter
 import online.zhenhong.marsrealestate.network.MarsProperty
 
 enum class MarsApiStatus { LOADING, ERROR, DONE }
@@ -59,23 +60,22 @@ class OverviewViewModel : ViewModel() {
      * await to get the result of the transaction.
      */
     init {
-        getMarsRealEstateProperties()
+        getMarsRealEstateProperties(MarsApiFilter.SHOW_ALL)
     }
 
     /**
-     * Gets Mars real estate property information from the Mars API Retrofit service and updates the
-     * [MarsProperty] [LiveData]. The Retrofit service returns a coroutine Deferred, which we await
-     * to get the result of the transaction.
+     * Gets filtered Mars real estate property information from the Mars API Retrofit service and
+     * updates the [MarsProperty] [List] and [MarsApiStatus] [LiveData]. The Retrofit service
+     * returns a coroutine Deferred, which we await to get the result of the transaction.
+     * @param filter the [MarsApiFilter] that is sent as part of the web server request
      */
-    private fun getMarsRealEstateProperties() {
+    private fun getMarsRealEstateProperties(filter: MarsApiFilter) {
         // https://github.com/square/retrofit/blob/master/CHANGELOG.md#version-260-2019-06-05
         viewModelScope.launch {
             _status.value = MarsApiStatus.LOADING
             try {
-                var listResult = MarsApi.retrofitService.getProperties()
-
+                _properties.value = MarsApi.retrofitService.getProperties(filter.value)
                 _status.value = MarsApiStatus.DONE
-                _properties.value = listResult
             } catch (e: Exception) {
                 _status.value = MarsApiStatus.ERROR
                 _properties.value = ArrayList()
@@ -96,6 +96,15 @@ class OverviewViewModel : ViewModel() {
      */
     fun displayPropertyDetailsComplete() {
         _navigateToSelectedProperty.value = null
+    }
+
+    /**
+     * Updates the data set filter for the web services by querying the data with the new filter
+     * by calling [getMarsRealEstateProperties]
+     * @param filter the [MarsApiFilter] that is sent as part of the web server request
+     */
+    fun updateFilter(filter: MarsApiFilter) {
+        getMarsRealEstateProperties(filter)
     }
 
 }
