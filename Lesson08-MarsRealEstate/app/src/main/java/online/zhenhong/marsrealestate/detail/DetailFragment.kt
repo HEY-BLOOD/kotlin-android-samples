@@ -28,13 +28,19 @@ import online.zhenhong.marsrealestate.databinding.FragmentDetailBinding
  * This [Fragment] will show the detailed information about a selected piece of Mars real estate.
  */
 class DetailFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        @Suppress("UNUSED_VARIABLE")
-        val application = requireNotNull(activity).application
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentDetailBinding.inflate(inflater)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        val application = requireNotNull(activity).application
+        val marsProperty = DetailFragmentArgs.fromBundle(requireArguments()).selectedProperty
+        val viewModelFactory = DetailViewModelFactory(marsProperty, application)
+        binding.viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(DetailViewModel::class.java)
+
         return binding.root
     }
 }

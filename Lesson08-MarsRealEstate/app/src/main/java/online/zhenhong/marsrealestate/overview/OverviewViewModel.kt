@@ -47,6 +47,12 @@ class OverviewViewModel : ViewModel() {
     val properties: LiveData<List<MarsProperty>>
         get() = _properties
 
+    // Internally, we use a MutableLiveData to handle navigation to the selected property
+    private val _navigateToSelectedProperty = MutableLiveData<MarsProperty?>()
+
+    // The external immutable LiveData for the navigation property
+    val navigateToSelectedProperty: LiveData<MarsProperty?>
+        get() = _navigateToSelectedProperty
 
     /**
      * [MarsProperty] [List] [LiveData]. The Retrofit service returns a coroutine Deferred, which we
@@ -64,8 +70,8 @@ class OverviewViewModel : ViewModel() {
     private fun getMarsRealEstateProperties() {
         // https://github.com/square/retrofit/blob/master/CHANGELOG.md#version-260-2019-06-05
         viewModelScope.launch {
+            _status.value = MarsApiStatus.LOADING
             try {
-                _status.value = MarsApiStatus.LOADING
                 var listResult = MarsApi.retrofitService.getProperties()
 
                 _status.value = MarsApiStatus.DONE
@@ -75,6 +81,21 @@ class OverviewViewModel : ViewModel() {
                 _properties.value = ArrayList()
             }
         }
+    }
+
+    /**
+     * When the property is clicked, set the [_navigateToSelectedProperty] [MutableLiveData]
+     * @param marsProperty The [MarsProperty] that was clicked on.
+     */
+    fun displayPropertyDetails(marsProperty: MarsProperty) {
+        _navigateToSelectedProperty.value = marsProperty
+    }
+
+    /**
+     * After the navigation has taken place, make sure navigateToSelectedProperty is set to null
+     */
+    fun displayPropertyDetailsComplete() {
+        _navigateToSelectedProperty.value = null
     }
 
 }
