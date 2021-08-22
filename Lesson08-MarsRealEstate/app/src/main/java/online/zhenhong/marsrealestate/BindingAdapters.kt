@@ -17,11 +17,13 @@
 
 package online.zhenhong.marsrealestate
 
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import online.zhenhong.marsrealestate.network.MarsProperty
+import online.zhenhong.marsrealestate.overview.MarsApiStatus
 import online.zhenhong.marsrealestate.overview.PhotoGridAdapter
 
 /**
@@ -45,4 +47,27 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<MarsProperty>?) {
     val adapter = recyclerView.adapter as PhotoGridAdapter
     adapter.submitList(data)
+}
+
+/**
+ * This binding adapter displays the [MarsApiStatus] of the network request in an image view.  When
+ * the request is loading, it displays a loading_animation.  If the request has an error, it
+ * displays a broken image to reflect the connection error.  When the request is finished, it
+ * hides the image view.
+ */
+@BindingAdapter("marsApiStatus")
+fun bindStatus(statusImageView: ImageView, status: MarsApiStatus?) {
+    when (status) {
+        MarsApiStatus.LOADING -> {
+            statusImageView.visibility = View.VISIBLE
+            statusImageView.setImageResource(R.drawable.loading_animation)
+        }
+        MarsApiStatus.ERROR -> {
+            statusImageView.visibility = View.VISIBLE
+            statusImageView.setImageResource(R.drawable.ic_connection_error)
+        }
+        MarsApiStatus.DONE -> {
+            statusImageView.visibility = View.GONE
+        }
+    }
 }
