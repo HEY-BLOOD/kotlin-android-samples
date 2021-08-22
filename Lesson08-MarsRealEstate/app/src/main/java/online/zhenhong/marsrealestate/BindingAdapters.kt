@@ -19,7 +19,10 @@ package online.zhenhong.marsrealestate
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import online.zhenhong.marsrealestate.network.MarsProperty
+import online.zhenhong.marsrealestate.overview.PhotoGridAdapter
 
 /**
  * Uses the Glide library to load an image by URL into an [ImageView]
@@ -27,10 +30,19 @@ import coil.load
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
-        imgView.load(imgUrl) {
+        imgView.load(it) {
             crossfade(true)
             placeholder(R.drawable.loading_animation)
             error(R.drawable.ic_broken_image)
         }
     }
+}
+
+/**
+ * When there is no Mars property data (data is null), hide the [RecyclerView], otherwise show it.
+ */
+@BindingAdapter("listData")
+fun bindRecyclerView(recyclerView: RecyclerView, data: List<MarsProperty>?) {
+    val adapter = recyclerView.adapter as PhotoGridAdapter
+    adapter.submitList(data)
 }

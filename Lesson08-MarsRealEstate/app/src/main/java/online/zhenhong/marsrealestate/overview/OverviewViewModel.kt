@@ -37,17 +37,18 @@ class OverviewViewModel : ViewModel() {
     val status: LiveData<String>
         get() = _status
 
-    // Internally, we use a MutableLiveData, because we will be updating the MarsProperty with
-    // new values
-    private val _property = MutableLiveData<MarsProperty>()
+    // Internally, we use a MutableLiveData, because we will be updating the List of MarsProperty
+    // with new values
+    private val _properties = MutableLiveData<List<MarsProperty>>()
 
     // The external LiveData interface to the property is immutable, so only this class can modify
-    val property: LiveData<MarsProperty>
-        get() = _property
+    val properties: LiveData<List<MarsProperty>>
+        get() = _properties
 
 
     /**
-     * Call getMarsRealEstateProperties() on init so we can display status immediately.
+     * [MarsProperty] [List] [LiveData]. The Retrofit service returns a coroutine Deferred, which we
+     * await to get the result of the transaction.
      */
     init {
         getMarsRealEstateProperties()
@@ -65,7 +66,7 @@ class OverviewViewModel : ViewModel() {
                 var listResult = MarsApi.retrofitService.getProperties()
                 _status.value = "Success: ${listResult.size} Mars properties retrieved"
                 if (!listResult.isEmpty()) {
-                    _property.value = listResult.first()
+                    _properties.value = listResult
                 }
             } catch (e: Exception) {
                 _status.value = "Failure: ${e.message}"
