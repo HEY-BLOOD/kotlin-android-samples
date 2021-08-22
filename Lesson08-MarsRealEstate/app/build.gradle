@@ -73,4 +73,7 @@ dependencies {
 
     // Glide
     // implementation "com.github.bumptech.glide:glide:$glideVersion"
+
+    // Coil - Instead of Glide
+    implementation "io.coil-kt:coil:$coilVersion"
 }

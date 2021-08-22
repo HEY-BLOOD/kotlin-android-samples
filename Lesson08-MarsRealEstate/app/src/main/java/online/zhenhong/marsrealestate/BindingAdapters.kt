@@ -17,3 +17,20 @@
 
 package online.zhenhong.marsrealestate
 
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
+import coil.load
+
+/**
+ * Uses the Glide library to load an image by URL into an [ImageView]
+ */
+@BindingAdapter("imageUrl")
+fun bindImage(imgView: ImageView, imgUrl: String?) {
+    imgUrl?.let {
+        imgView.load(imgUrl) {
+            crossfade(true)
+            placeholder(R.drawable.loading_animation)
+            error(R.drawable.ic_broken_image)
+        }
+    }
+}
