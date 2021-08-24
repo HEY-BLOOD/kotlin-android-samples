@@ -17,20 +17,19 @@
   ~
   -->
 
-<resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.DevByteActivity">
 
-    <color name="primaryColor">#1e8e3e</color>
-    <color name="primaryLightColor">#58bf6b</color>
-    <color name="primaryDarkColor">#005f12</color>
-    <color name="secondaryColor">#e37400</color>
-    <color name="secondaryLightColor">#ffa43f</color>
-    <color name="secondaryDarkColor">#aa4600</color>
-    <color name="primaryTextColor">#000000</color>
-    <color name="secondaryTextColor">#000000</color>
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/my_nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true" />
 
-    <color name="background_grey">#ffDDDDDD</color>
-    <color name="text_light">#ff666666</color>
-    <color name="text_black">#ff222222</color>
-</resources>
+</FrameLayout>
