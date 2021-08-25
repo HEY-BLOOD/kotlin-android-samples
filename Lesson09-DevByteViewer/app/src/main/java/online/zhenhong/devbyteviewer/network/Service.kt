@@ -54,5 +54,5 @@ object Network {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
-    val devbytes = retrofit.create(DevbyteService::class.java)
+    val devbyteService = retrofit.create(DevbyteService::class.java)
 }
