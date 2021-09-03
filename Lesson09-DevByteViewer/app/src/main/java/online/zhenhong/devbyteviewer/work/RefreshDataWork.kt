@@ -27,6 +27,10 @@ import retrofit2.HttpException
 class RefreshDataWorker(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
 
+    companion object {
+        val WORK_NAME: String = RefreshDataWorker.javaClass.simpleName
+    }
+
     /**
      * A coroutine-friendly method to do your work.
      */
