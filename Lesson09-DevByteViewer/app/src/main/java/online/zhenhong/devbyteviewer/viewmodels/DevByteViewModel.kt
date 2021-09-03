@@ -23,6 +23,8 @@ import online.zhenhong.devbyteviewer.domain.Video
 import online.zhenhong.devbyteviewer.network.Network
 import online.zhenhong.devbyteviewer.network.asDomainModel
 import kotlinx.coroutines.launch
+import online.zhenhong.devbyteviewer.database.getDatabase
+import online.zhenhong.devbyteviewer.repository.VideosRepository
 import java.io.IOException
 
 /**
@@ -37,37 +39,17 @@ import java.io.IOException
  */
 class DevByteViewModel(application: Application) : AndroidViewModel(application) {
 
-    /**
-     * A playlist of videos that can be shown on the screen. This is private to avoid exposing a
-     * way to set this value to observers.
-     */
-    private val _playlist = MutableLiveData<List<Video>>()
+    private val database = getDatabase(application)
+    private val videosRepository = VideosRepository(database)
 
-    /**
-     * A playlist of videos that can be shown on the screen. Views should use this to get access
-     * to the data.
-     */
-    val playlist: LiveData<List<Video>>
-        get() = _playlist
+    val playlist = videosRepository.videos
 
     /**
      * init{} is called immediately when this ViewModel is created.
      */
     init {
-        refreshDataFromNetwork()
-    }
-
-    /**
-     * Refresh data from network and pass it via LiveData. Use a coroutine launch to get to
-     * background thread.
-     */
-    private fun refreshDataFromNetwork() = viewModelScope.launch {
-        try {
-            val playlist = Network.devbyteService.getPlaylist()
-            _playlist.postValue(playlist.asDomainModel())
-        } catch (networkError: IOException) {
-            // Show an infinite loading spinner if the request fails
-            // challenge exercise: show an error to the user if the network request fails
+        viewModelScope.launch {
+            videosRepository.refreshVideos()
         }
     }
 
